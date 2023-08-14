@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BASALT 2022 - Human Evaluation Interface</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <!-- Javascript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+    
+    {% include 'prism_editor.html' %}
+
+    <!-- Basalt Specific -->
+    <script type="text/javascript" src="/static/dist/js/basalt_tasks_metadata.js?q=1"></script>
+    <script type="text/javascript" src="/static/dist/js/human-evaluation-interface.js?q=1"></script>
+    <script type="text/javascript">
+        window.basalt_api_key="{{ current_user.api_key }}";
+        $(document).ready(function(){
+
+            window.TASK_NAME="{{ current_task }}"
+            const are_eval_questions_required = ("{{ eval_questions_required }}" === "True");
+            setup_interface("loginInfo", are_eval_questions_required);
+            get_match("loginInfo", window.TASK_NAME, are_eval_questions_required);
+
+            // In case of demo-evaluation, enable the demo-evaluation banner
+            if(document.location.pathname=="/demo-evaluation"){
+                $("#demo-evaluation-block").css("display", "block");
+            }
+
+            // Setup the correct example videos
+            example_video_metadata = {
+                "FindCave":[
+                   {
+                      "video_url":"https://aicrowd-production.s3.eu-central-1.amazonaws.com/misc/neurips-minerl-challenge/2022/positive-example-videos-basalt/FindCave1.mp4",
+                      "description":"Player finds a nearby cave and enters it."
+                   },
+                   {
+                      "video_url":"https://aicrowd-production.s3.eu-central-1.amazonaws.com/misc/neurips-minerl-challenge/2022/positive-example-videos-basalt/FindCave2.mp4",
+                      "description":"Player spots a narrow entrance to a cave and enters it."
+                   },
+                   {
+                      "video_url":"https://aicrowd-production.s3.eu-central-1.amazonaws.com/misc/neurips-minerl-challenge/2022/positive-example-videos-basalt/FindCave3.mp4",
+                      "description":"Player navigates around, avoiding small pits and eventually finds a cave."
+                   }
+                ],
+                "MakeWaterfall":[
+                   {
+                      "video_url":"https://aicrowd-production.s3.eu-central-1.amazonaws.com/misc/neurips-minerl-challenge/2022/positive-example-videos-basalt/MakeWaterfall1.mp4",
+                      "description":"Player places water high up, then drops down to quickly get to a spot where they can take a good image."
+                   },
+                   {
+                      "video_url":"https://aicrowd-production.s3.eu-central-1.amazonaws.com/misc/neurips-minerl-challenge/2022/positive-example-videos-basalt/MakeWaterfall2.mp4",
+                      "description":"Player finds an existing cliff for pouring water down, then navigates to take a good shot of the MakeWaterfall."
+                   },
+                   {
+                      "video_url":"https://aicrowd-production.s3.eu-central-1.amazonaws.com/misc/neurips-minerl-challenge/2022/positive-example-videos-basalt/MakeWaterfall3.mp4",
+                      "description":"Player climbs on nearby cliff to construct a spot for waterfall, and then creates a waterfall."
+                   }
+                ],
+                "CreateVillageAnimalPen":[
+                   {
+                      "video_url":"https://aicrowd-production.s3.eu-central-1.amazonaws.com/misc/neurips-minerl-challenge/2022/positive-example-videos-basalt/CreateVillageAnimalPen1.mp4",
+                      "description":"Player spots nearby animals, builds a pen and then lures animals in."
+                   },
+                   {
+                      "video_url":"https://aicrowd-production.s3.eu-central-1.amazonaws.com/misc/neurips-minerl-challenge/2022/positive-example-videos-basalt/CreateVillageAnimalPen2.mp4",
+                      "description":"Player spots nearby animals, builds a pen and then lures animals in."
+                   },
+                   {
+                      "video_url":"https://aicrowd-production.s3.eu-central-1.amazonaws.com/misc/neurips-minerl-challenge/2022/positive-example-videos-basalt/CreateVillageAnimalPen3.mp4",
+                      "description":"Player must seek to find animals, then lures them closer before creating a pen."
+                   }
+                ],
+                "BuildVillageHouse":[
+                   {
+                      "video_url":"https://aicrowd-production.s3.eu-central-1.amazonaws.com/misc/neurips-minerl-challenge/2022/positive-example-videos-basalt/BuildVillageHouse1.mp4",
+                      "description":"Player builds a house using wood, much like the nearby buildings."
+                   },
+                   {
+                      "video_url":"https://aicrowd-production.s3.eu-central-1.amazonaws.com/misc/neurips-minerl-challenge/2022/positive-example-videos-basalt/BuildVillageHouse2.mp4",
+                      "description":"Player uses sand blocks to build the house, much like the nearby houses."
+                   },
+                   {
+                      "video_url":"https://aicrowd-production.s3.eu-central-1.amazonaws.com/misc/neurips-minerl-challenge/2022/positive-example-videos-basalt/BuildVillageHouse3.mp4",
+                      "description":"Player builds house using similar wooden blocks to other buildings, mimicing the style."
+                   }
+                ]
+             }
+        
+            
+            for(var i=0; i<3; i++){
+                $(".example_video_"+(i+1)+" .card .card-header").html(
+                    "<b>" + example_video_metadata[window.TASK_NAME][i].description + "</b>"
+                )
+                $(".example_video_"+(i+1)+" .card .card-body video").attr("src", example_video_metadata[window.TASK_NAME][i].video_url);
+            }
+             
+
+        });
+      
+    </script>
+    <style type="text/css">
+        .video-js.vjs-paused:not(.vjs-has-started) .vjs-loading-spinner {
+            display: block;
+            visibility: visible;
+            z-index: 1000000;
+        }
+        .video-js.vjs-paused:not(.vjs-has-started) .vjs-loading-spinner,
+        .video-js.vjs-paused:not(.vjs-has-started) .vjs-loading-spinner {
+            -webkit-animation: vjs-spinner-spin 1.1s cubic-bezier(0.6, 0.2, 0, 0.8) infinite, vjs-spinner-fade 1.1s linear infinite;
+            animation: vjs-spinner-spin 1.1s cubic-bezier(0.6, 0.2, 0, 0.8) infinite, vjs-spinner-fade 1.1s linear infinite;
+        }       
+        
+    </style>
+</head>
+  <body>
+
+
+    <!-- MODALS -->
+
+    <!-- Example Videos Modal -->
+    <div class="modal fade" id="exampleVideosModal" tabindex="-1" aria-labelledby="exampleVideosModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleVideosModalLabel">Example Videos: <code>{{ current_task }}</code></h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        This page shows some examples of players which perform the task really well. We also include the reasons why we believe the players have performed the task well.
+                        <br/> 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 example_video_1">
+                        <div class="card">
+                            <div class="card-header"> 
+                            </div>
+                            <div class="card-body">
+                                <video class="card-img-top video-js vjs-default-skin vjs-big-play-centered border"  width="100%" height="400px" controls preload="metadata" data-setup='{ "playbackRates": [0.5, 1, 1.5, 2, 5]}'>
+                                </video>
+                            </div>
+                        </div>                
+                    </div>                    
+
+                    <div class="col-md-6 example_video_2">
+                        <div class="card">
+                            <div class="card-header"> 
+                            </div>
+                            <div class="card-body">
+                                <video class="card-img-top video-js vjs-default-skin vjs-big-play-centered border"  width="100%" height="400px" controls preload="metadata" data-setup='{ "playbackRates": [0.5, 1, 1.5, 2, 5]}'>
+                                </video>
+                            </div>
+                        </div>                
+                    </div>                    
+
+                    <div class="col-md-6 example_video_3">
+                        <div class="card">
+                            <div class="card-header"> 
+                            </div>
+                            <div class="card-body">
+                                <video class="card-img-top video-js vjs-default-skin vjs-big-play-centered border"  width="100%" height="400px" controls preload="metadata" data-setup='{ "playbackRates": [0.5, 1, 1.5, 2, 5]}'>
+                                </video>
+                            </div>
+                        </div>                
+                    </div>                    
+
+                </div>
+
+                
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+        </div>
+    </div>    
+
+
+    <!-- MODALS END-->
+
+
+    <div class="container p-5">
+        <!-- Task Description-->
+        <div class="row" id="demo-evaluation-block" style="display:none">
+            <div class="col-md-12">
+                <div class="alert alert-danger" role="alert">
+                    This is a <code>demo evaluation</code> and the results will <b>NOT</b> be recorded.
+                  </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h1 id="neurips-basalt-2022-competition-evaluation">MineRL BASALT Benchmark competition evaluation</h1>
+                <p>Welcome to the MineRL BASALT Benchmark evaluation questionnaire! This will take roughly <strong>15 minutes of your time</strong>.</p>
+                <p><strong>Requirements</strong>: Knowledge of Minecraft (at least of 5 hours of gameplay time with Minecraft).</p>
+                <p>In this questionnaire, you will watch videos of different players completing tasks in Minecraft, and your task is to judge which of the players is more successful at completing the task.</p>
+                <p>Videos are shown in pairs, and your task is to select which one of the two is better at solving the task. The page shows the task description. You are also given a set of more specific questions which may help you decide which of the two players completes the task better.</p>
+                <p> You may refer to the <b>Example Videos</b> section, for some examples of what are considered as good executions of the said task, and why. </p>
+                <!-- 
+                <p>Before you proceed to the actual questions, you will be asked to answer questions about Minecraft to validate your knowledge of Minecraft.</p>
+                <p>There are three parts to this questionnaire:</p>
+                <ol>
+                <li>Introduction (this page).</li>
+                <li>Validation of your Minecraft knowledge with a questionnaire.</li>
+                <li>Four pairs of videos.</li>
+                </ol>
+                -->
+                <p>Your answers will be used in the following ways:</p>
+                <ul>
+                <li>To rank different AI solutions for the task.</li>
+                <li>The answers may be shared publicly to support the research.</li>
+                </ul>
+                <p>No personal information is collected.</p>
+                <p>You may complete the same questionnaire multiple times, but may be asked to judge players completing a different task. So please ensure that you take note of the Task you are submitting the responses for.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card" style="width: 100%;">
+                    <div class="card-header text-left">
+                        Task description the players received
+                    </div>                
+                    <div class="card-body">
+                        <h3 id="basalt_task_title" class="card-title"></h3>
+                        <script type="text/javascript">
+                            $(document).ready(function() {
+                                $('#basalt_task_title').html(
+                                    get_human_readable_task_name("{{ current_task }}")
+                                );
+                            });
+                        </script> 
+                        
+                        <div id="basalt_task_description" class="alert card-text text-left"></div>
+                        <!-- Info Buttons -->
+                        <div class="row justify-content-end" style="float:right">
+                            <div class="d-grid gap-4 d-md-block">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#exampleVideosModal">Example Videos</button>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    $(document).ready(function(){
+                        $("#basalt_task_description").html(
+                            get_description("{{ current_task}}")
+                        )
+                    });
+                </script> 
+            </div>
+        </div>
+
+
+        <!-- Videos -->
+        <div class="row mt-4">
+            <!-- Video #1 -->
+            <div class="col-md-6 ">
+                <div class="card">
+                    <div class="card-header"> <b>Left Player</b></div>
+                    <div class="card-body">
+                        <video id="playerA" class="card-img-top video-js vjs-default-skin vjs-big-play-centered border"  width="100%" height="400px" controls preload="metadata" data-setup='{ "playbackRates": [0.5, 1, 1.5, 2, 5]}'>
+                        </video>
+                    </div>
+                    <div class="card-footer text-center">
+                        <code id="playerA_id"> </code>
+                    </div>                     
+                </div>                
+            </div>
+
+            <!-- Video #2 -->
+            <div class="col-md-6 ">
+                <div class="card">
+                    <div class="card-header"> <b>Right Player</b></div>
+                    <div class="card-body">
+                        <video id="playerB" class="card-img-top video-js vjs-default-skin vjs-big-play-centered border"  width="100%" height="400px" controls preload="metadata" data-setup='{ "playbackRates": [0.5, 1, 1.5, 2, 5]}'>
+                        </video>
+                    </div>
+                    <div class="card-footer text-center">
+                        <code id="playerB_id"> </code>
+                    </div>                     
+                </div>                
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <form name="evaluationForm" id="id_evaluationForm"  class="needs-validation">
+                    <input type="hidden" id="assignmentId" value="" name="assignmentId"/>
+                    <input type="hidden" id="workerId" value="" name="workerId"/>
+                    <input type="hidden" id="hitId" value="" name="hitId"/>              
+                    <input type="hidden" id="evaluation_metadata" value="" name="evaluation_metadata"/>
+                    <div class="row mb-4">
+                    <!-- Direct Questions -->
+                        <h3 class="mt-4"> Question Set <code>#1</code> </h3>
+                        <table class="table">
+                            <thead>
+                                <tr class="row-mt-4">
+                                    <th class="col-8"></th>
+                                    <th class="col-2">Left Player</th>
+                                    <th class="col-2">Right Player</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="directQuestion">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Comparative Questions -->
+                    <div class="row mb-4" id="comparisons">
+                        <!-- Direct Questions -->
+                        <h3 class="mt-4 mb-4"> Question Set #2 </h3>
+                    </div>
+
+                    <div class="row mb-4">
+                        
+                        <hr/>
+                            <h2 class="mt-4">Which player is better overall ?<code>*</code></h2>
+                        
+
+
+                        <div class="input-group input-group-lg ">
+                            <div class="btn-group" role="group" aria-label="">
+                                <input type="radio" class="btn-check" name="winner" id="id_p1" value="p1" autocomplete="off" required>
+                                <label class="btn btn-outline-primary" for="id_p1">Left Player</label>                            
+                                <input type="radio" class="btn-check" name="winner" id="id_p2" value="p2"  autocomplete="off" required>
+                                <label class="btn btn-outline-primary" for="id_p2">Right Player</label>
+
+                                <input type="radio" class="btn-check" name="winner" id="id_draw" value="draw"  autocomplete="off" required>
+                                <label class="btn btn-outline-primary" for="id_draw">Draw</label>
+                            </div>                               
+                        </div>
+                    </div>
+
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Justify your answer with about 20 words." name="justificationText" id="justificationText" minlength="100" required></textarea>
+                        <label for="justificationText">Justify your answer with a minimum of 100 characters.<code>*</code></label>
+                    </div>              
+                    
+                    <input type="hidden" name="task" value="{{ current_task }}"></input>
+
+                    <button type="submit" class="btn btn-primary mt-4">Submit</button>
+                </form>
+        </div>
+    </div>
+      
+  </body>
+</html>

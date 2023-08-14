@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="theme-color" content="#ffffff" />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="/static/dist/css/application.css"
+        />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js">
+            <script type="text/javascript" src='dist/js/application.js'>
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+
+        {% include 'prism_editor.html' %}
+    </head>
+
+    <body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+        <!-- page content -->
+        <div class="content">
+            <div
+                class="alert alert-warning alert-dismissible fade show"
+                role="alert"
+                style="display: none"
+            >
+                <div class="container-fluid">
+                    <span class="alert-message"></span>
+                    <button
+                        type="button"
+                        class="close"
+                        data-dismiss="alert"
+                        aria-label="Close"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="container">
+<script type="text/javascript" src="/static/dist/js/basalt_tasks_metadata.js?q=1"></script>
+<script type="text/javascript" src="/static/dist/js/human-evaluation-interface.js?q=1"></script>
+<script type="text/javascript">
+    window.basalt_api_key="{{ current_user.api_key }}";
+    $(document).ready(function(){
+        const are_eval_questions_required = ("{{ eval_questions_required }}" === "True");
+        setup_interface("loginInfo", are_eval_questions_required);
+        get_match("loginInfo", "{{ current_task }}", are_eval_questions_required);
+    });
+</script>
+<main>
+    <div class="container">
+        <div class="row d-none">
+            <div class="col-md-4 offset-md-8 form-group text-right">
+                <label for="tasks">Task </label>
+                <select name="tasks" id="id_tasks" class="form-control">
+                    {% for task in tasks %}
+                        <option value="{{ task }}" {% if current_task == task %}selected{% endif %}>{{ task }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div id="loginInfo" class="row">
+        </div>
+
+        <div class="d-flex mb-3">
+          <div class="mr-auto"><b>Task: {{ current_task }}</b></div>
+            <!-- <b>Logged in as {{ current_user.aicrowd_username }}{% if current_user.is_superuser %}<span class="text-danger"> (admin)</span>{% endif %}.</b> -->
+        </div>
+        <!-- 
+        {% if current_user.is_superuser %}
+        <div class="d-flex flex-row-reverse">
+         <a href="/validate?api_key={{ current_user.api_key }}">👉 Validate Agents</a>
+        </div>
+        {% endif %}
+        -->
+        <hr class="mb-3" />
+
+        <div class="d-flex justify-content-center" id="loader">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
+            <path opacity="0.2" fill="#F0514D" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
+            <path fill="#F0514D" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0C22.32,8.481,24.301,9.057,26.013,10.047z">
+              <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite"/>
+            </path>
+          </svg>
+        </div>
+
+    
+        <div id="human_evaluation_interface">
+
+        </div>
+
+        <div id="human_evaluation_interface-old">
+            <div class="row mt-5">
+            <div class="col-md-6">
+                <div  class="col-md-12 center-block">
+                    <div class="video">
+                        <center>
+                            <video id="playerA" class="video-js vjs-default-skin vjs-big-play-centered border" width="410" height="410" controls preload="metadata" data-setup='{ "playbackRates": [0.5, 1, 1.5, 2, 5]}'>
+                            </video>
+                            <code id="playerA_id" class="text-center">
+                            </code>
+                        </center>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div  class="col-md-12 center-block">
+                    <div class="video">
+                        <center>
+                            <video id="playerB" class="video-js vjs-default-skin vjs-big-play-centered border" width="410" height="410" controls preload="metadata" data-setup='{ "playbackRates": [0.5, 1, 1.5, 2, 5]}'>
+                            </video>
+                            <code id="playerB_id" class="text-center">
+                            </code>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <hr class="mt-5">
+        <div id="evaluation_questions" class="row">
+            <form name="evaluationForm" id="id_evaluationForm" style="width: 100%">
+            <div class="col-md-12">
+                <div id="div_winner" class="row">
+                    <div class="col-md-12 text-center mt-5 mb-3">
+                        <h3>Winner<sup>*</sup></h3>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <div class="btn-group" role="group" aria-label="winner radio toggle button group">
+                            <label class="btn btn-secondary " for="id_p1">Left player
+                            <input type="radio" name="winner" id="id_p1" value="p1" style="position: absolute; opacity: 0" required>
+                            </label>
+
+                            <label class="btn btn-secondary " for="id_draw">Draw
+                            <input type="radio" name="winner" id="id_draw" style="position: absolute; opacity: 0" value="draw">
+                            </label>
+
+                            <label class="btn btn-secondary " for="id_p2">Right player
+                            <input type="radio" name="winner" id="id_p2" style="position: absolute; opacity: 0" value="p2">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row"><br><br></div>
+                <div id="directQuestion" class="mb-3">
+                </div>
+                <div class="row"><br><br></div>
+                <div id="comparisons" class="mb-3">
+                </div>
+                <div class="row"><br><br></div><hr>
+                <div id="notes">
+                    <div class="row mt-5">
+                        <div class="col-md-12 mb-2">
+                            <h3>Notes</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 form-group">
+                            <textarea class="form-control form-note" id="id_notes" placeholder="Anything else which you feel important." style="width: 100%;height: 100%;" rows="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row"><br></div>
+                <div class="row" id="div_submit_btn">
+                    <div class="col-md-6 offset-md-3 text-center form-group">
+                        <input type="submit" class="btn btn-primary" id="id_submit" value="Submit">
+                    </div>
+                </div>
+                <hr>
+            </div>
+            </form>
+        </div>
+        <div class="row"><br></div>
+    </div>
+
+    <style>
+    hr {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        border: 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    sup{
+        color: #DE4B46;
+    }
+    .form-note{
+        padding: 15px;
+    }
+    .border{
+        margin-bottom: 10px;
+    }
+</style>
+</main>
+
+</div>
+        </div>
+        <!-- /page content -->
+
+    </body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>AIcrowd | BASALT Human Evaluation Interface</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/assets/img/favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/assets/img/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/assets/img/favicons/favicon-16x16.png" />
+    <link rel="manifest" href="/static/assets/img/favicons/site.webmanifest" />
+    <link rel="mask-icon" href="/static/assets/img/favicons/safari-pinned-tab.svg" color="#f0524d" />
+    <link rel="shortcut icon" href="/static/assets/img/favicons/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-config" content="assets/img/favicons/browserconfig.xml" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="stylesheet" type="text/css" href="/static/dist/css/application.css" />
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js">
+        <script type="text/javascript" src='dist/js/application.js'>
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+
+    {% include 'prism_editor.html' %}
+</head>
+
+<body>
+    <!-- page content -->
+    <div class="content">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="display: none">
+            <div class="container-fluid">
+                <span class="alert-message"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- app header -->
+        <header class="app-header">
+            <div class="container-fluid">
+                <div class="app-header-section">
+                    <!-- app brand -->
+                    <div class="app-brand">
+                        <a class="logo-aicrowd" href="/">
+                            <span>AIcrowd</span>
+                        </a>
+                    </div>
+                    <!-- /app brand -->
+                </div>
+
+                <div class="app-header-section">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/docs">API Documentation</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/scores">Leaderboard</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <!-- /app header -->
+        <div class="container">{% block content %}{% endblock %}</div>
+    </div>
+    <!-- /page content -->
+
+    <!-- app footer -->
+    <footer class="app-footer">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- app brand -->
+                <div class="app-brand col-3 col-lg-8">
+                    <div class="app-brand">
+                        <a class="logo-aicrowd-light" href="#">
+                            <span>AIcrowd</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- /app brand -->
+
+                <!-- legal -->
+                <div class="section-legal col-12 col-sm-4 col-md-3 col-lg-4">
+                    <p>&#169; 2022 AIcrowd. All rights reserved.</p>
+                </div>
+                <!-- /legal -->
+            </div>
+        </div>
+    </footer>
+    <!-- /app footer -->
+</body>
+
+</html>

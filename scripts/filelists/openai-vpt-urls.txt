@@ -1,0 +1,2 @@
+https://openaipublic.blob.core.windows.net/minecraft-rl/models/foundation-model-1x.model
+https://openaipublic.blob.core.windows.net/minecraft-rl/models/foundation-model-1x.weights

@@ -1,0 +1,51 @@
+{% extends 'base.html' %} {% block content %}
+<script type="text/javascript" src="/static/dist/js/scores.js"></script>
+<script>
+    $(document).ready(function(){
+        let skip={{ skip }};
+        let limit={{ limit }};
+        get_scores("scores", skip, limit);
+    });
+</script>
+<main>
+    <div class="container">
+        <div class="row"><br /></div>
+        <div class="row">
+            <h1>
+                <span class="text-primary">MineRL</span>
+                BASALT | Agents
+                <br /><br />
+            </h1>
+        </div>
+        <div class="row" id="scores">
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Rank</th>
+                  <th scope="col">Agent Name</th>
+                  <th scope="col">Task</th>
+                  <th scope="col">Mu</th>
+                  <th scope="col">Sigma</th>
+                  <th scope="col">Score</th>
+                  <th scope="col">Episodes</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <style>
+    hr {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        border: 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+</style>
+</main>
+
+{% endblock %}

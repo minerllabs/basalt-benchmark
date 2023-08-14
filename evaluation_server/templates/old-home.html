@@ -1,0 +1,237 @@
+{% extends 'base.html' %} {% block content %}
+<script
+  type="text/javascript"
+  src="/static/dist/js/basalt_tasks_metadata.js"
+></script>
+<script
+  type="text/javascript"
+  src="/static/dist/js/human-evaluation-interface.js"
+></script>
+<script type="text/javascript">
+  var basalt_api_key = null;
+  $(document).ready(function () {
+    $("input[name=basalt_api_key]").change(function () {
+      basalt_api_key = this.value;
+    });
+    const are_eval_questions_required =
+      "{{ eval_questions_required }}" === "True";
+    setup_interface("loginInfo", are_eval_questions_required);
+  });
+</script>
+<style>
+  sup {
+    color: #de4b46;
+  }
+</style>
+<main>
+  <div class="container">
+    <div class="row"><br /></div>
+    <div class="row">
+      <h1>
+        <span class="text-primary">MineRL</span>
+        BASALT
+        <br /><br />
+      </h1>
+    </div>
+    <div class="row">
+      <div class="col-md-4 form-group float-left">
+        <label for="basalt_api_key">BASALT API Key</label>
+        <input class="form-control" name="basalt_api_key" />
+      </div>
+      <div class="col-md-4 offset-md-4 form-group text-right">
+        <label for="tasks">Task </label>
+        <select name="tasks" id="id_tasks" class="form-control">
+          <option hidden disabled selected value>Select task</option>
+          {% for task in tasks %}
+          <option value="{{ task }}">{{ task }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 offset-md-8 text-right font-weight-bold">
+        <label>Description </label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <p id="description">Please select task.</p>
+      </div>
+    </div>
+    <div id="loginInfo" class="row"></div>
+    <div id="human_evaluation_interface">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="col-md-12 center-block">
+            <div class="video">
+              <video
+                id="playerA"
+                class="video-js vjs-default-skin vjs-big-play-centered border"
+                width="410"
+                height="410"
+                controls
+                preload="metadata"
+                data-setup='{ "playbackRates": [0.5, 1, 1.5, 2, 5]}'
+              ></video>
+              <center>
+                <code id="playerA_id" class="text-center"> </code>
+                <br />
+                {#
+                <button
+                  id="playerA_select"
+                  type="button"
+                  class="btn btn-secondary"
+                >
+                  #} {# Select#} {#</button
+                >#}
+              </center>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="col-md-12 center-block">
+            <div class="video">
+              <video
+                id="playerB"
+                class="video-js vjs-default-skin vjs-big-play-centered border"
+                width="410"
+                height="410"
+                controls
+                preload="metadata"
+                data-setup='{ "playbackRates": [0.5, 1, 1.5, 2, 5]}'
+              ></video>
+              <center>
+                <code id="playerB_id" class="text-center"> </code>
+                <br />
+                {#
+                <button
+                  id="playerB_select"
+                  type="button"
+                  class="btn btn-secondary"
+                >
+                  #} {# Select#} {#</button
+                >#}
+              </center>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 center-block">
+          <center>
+            {#
+            <button id="draw" type="button" class="btn btn-secondary">
+              #} {# Draw#} {#</button
+            >#}
+          </center>
+        </div>
+      </div>
+    </div>
+    <hr class="mt-5" />
+    <div id="evaluation_questions" class="row">
+      <form name="evaluationForm" id="id_evaluationForm" style="width: 100%">
+        <div class="col-md-12">
+          <div id="div_winner" class="row">
+            <div class="col-md-12 text-center">
+              <h2>Winner<sup>*</sup></h2>
+            </div>
+            <div class="col-md-12 text-center">
+              <div
+                class="btn-group"
+                role="group"
+                aria-label="winner radio toggle button group"
+              >
+                <label class="btn btn-secondary btn-lg" for="id_p1"
+                  >Left player
+                  <input
+                    type="radio"
+                    name="winner"
+                    id="id_p1"
+                    value="p1"
+                    style="position: absolute; opacity: 0"
+                    required
+                  />
+                </label>
+
+                <label class="btn btn-secondary btn-lg" for="id_draw"
+                  >Draw
+                  <input
+                    type="radio"
+                    name="winner"
+                    id="id_draw"
+                    style="position: absolute; opacity: 0"
+                    value="draw"
+                  />
+                </label>
+
+                <label class="btn btn-secondary btn-lg" for="id_p2"
+                  >Right player
+                  <input
+                    type="radio"
+                    name="winner"
+                    id="id_p2"
+                    style="position: absolute; opacity: 0"
+                    value="p2"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="row"><br /><br /></div>
+          <div id="directQuestion" class="mb-3"><br /></div>
+          <div class="row"><br /><br /></div>
+          <div id="comparisons" class="mb-3"><br /></div>
+          <div class="row"><br /><br /></div>
+          <hr />
+          <div id="notes">
+            <div class="row">
+              <div class="col-md-12 mb-2">
+                <h3>Notes</h3>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 form-group">
+                <textarea
+                  class="form-control form-note"
+                  id="id_notes"
+                  placeholder="Anything else which you feel important."
+                  style="width: 100%; height: 100%"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="row"><br /></div>
+          <div class="row" id="div_submit_btn">
+            <div class="col-md-6 offset-md-3 text-center form-group">
+              <input
+                type="submit"
+                class="btn btn-primary"
+                id="id_submit"
+                value="Submit"
+              />
+            </div>
+          </div>
+          <hr />
+        </div>
+      </form>
+    </div>
+    <div class="row"><br /></div>
+  </div>
+
+  <style>
+    hr {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      border: 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    .form-note {
+      padding: 15px;
+    }
+    .border {
+      margin-bottom: 10px;
+    }
+  </style>
+</main>
+{% endblock %}

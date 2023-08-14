@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="stylesheet" type="text/css" href="/static/dist/css/application.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script type="text/javascript" src='dist/js/application.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+    {% include 'prism_editor.html' %}
+</head>
+
+<body>
+    <!-- app header -->
+    <header class="app-header">
+        <div class="container-fluid">
+            <div class="app-header-section">
+                <!-- app brand -->
+                <div class="app-brand">
+                    <a class="logo-aicrowd" href="/">
+                        <span>AIcrowd</span>
+                    </a>
+                </div>
+                <!-- /app brand -->
+            </div>
+
+            <div class="app-header-section">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/docs">API Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/scores">Leaderboard</a>
+                    </li>
+                    <li class="nav-item font-weight-bold">👋 {{ current_user.aicrowd_username }}</li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <!-- /app header -->
+    <!-- page content -->
+    <div class="content">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="display: none">
+            <div class="container-fluid">
+                <span class="alert-message"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="container">
+
+        </div>
+        <div class="masthead">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <h1>Evaluate Agent</h1><span>({{agents|length}} pending)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container pt-4">
+            {% if agents|length<1 or agent is none %} {% if agents|length>0 %}
+                <h3>This agent is not present or already validated. </h3>
+                {% else %}
+                <h3>No agent pending to validate!! 🎉 </h3>
+                {% endif %}
+                {% else %}
+                <div class="d-block w-100">
+                    <form {% if agent.is_processed %}onSubmit="return false;" {% endif %} method="post"
+                        action="/validate/{{ agent.id }}/approve?api_key={{current_user.api_key}}" id="approve">
+                        <table class="table table-bordered">
+                            <thead class="thead">
+                                <tr>
+                                    <th>Submission ID</th>
+                                    <th>Task</th>
+                                    <th>Created</th>
+                                    <th>#Episodes</th>
+                                    <th data-toggle="tooltip" data-placement="top" title="Please rate the agents after seeing below videos.
+                                    A higher value means a better agent.<br/><br/>
+                                    For example:<br/>1 is a completely random agent, while 5 means human-like.">
+                                        <span>Rating</span>
+                                        <span>ℹ️</span>
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>{{ agent.name }} <a
+                                        href="https://www.aicrowd.com/challenges/neurips-2022-minerl-basalt-competition/submissions/{{ agent.name }}"
+                                        target="_blank">🔗</a></td>
+                                <td>{{ agent.task }}</td>
+                                <td class="text-capitalize">{{ timeago }}</td>
+                                <td>{{ agent.episodes|count }}</td>
+                                <td>
+                                    <select name="base_rating"
+                                        class="form-control bg-white {% if agent.is_processed %}disabled{% endif %}">
+                                        {% if agent.is_processed %}
+                                        <option>{{ agent.base_rating }}</option>
+                                        {% else %}
+                                        <option selected>Select</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        {% endif %}
+                                    </select>
+                                </td>
+                                <td class="text-center">
+                                    <input value="Submit"
+                                        class="btn btn-primary {% if agent.is_processed %} disabled {% endif %}"
+                                        type="submit"></input>
+                                    {% if not expand %}
+                                    <button class="btn btn-secondary" type="button"
+                                        onclick="window.location.href=window.location.href+'&expand=true';">View More
+                                        🎥</button>
+                                    {% else %}
+                                    <button class="btn btn-secondary" type="button"
+                                        onclick="window.location.href=window.location.href.replace('&expand=true', '')">Reduce
+                                        🎥</button>
+                                    {% endif %}
+                                    <button class="btn btn-secondary" type="button"
+                                        onclick="window.location.href='/validate/{{agent.name}}/{{agent.task}}'+location.search">Link</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                <div class="mt-5 table-videos">
+                    <table class="table">
+                        <tbody>
+                            {% if expand %}
+                            {% for episode_batch in agent.episodes|batch(3) %}
+                            <tr>
+                                {% for episode in episode_batch %}
+                                <td>
+                                    <video class="video-js vjs-default-skin vjs-big-play-centered" width="320"
+                                        height="180" controls preload="metadata"
+                                        data-setup='{ "playbackRates": [0.5, 1, 1.5, 2, 5]}'>
+                                        <source src="{{ episode.video_uri }}" type="video/mp4">
+                                    </video>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                {% set episode = (agent.episodes)|first %}
+                                <td>
+                                    <video class="video-js vjs-default-skin vjs-big-play-centered" width="320"
+                                        height="180" controls preload="metadata"
+                                        data-setup='{ "playbackRates": [0.5, 1, 1.5, 2, 5]}'>
+                                        <source src="{{ episode.video_uri }}" type="video/mp4">
+                                    </video>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+
+                <style>
+                    hr {
+                        margin-top: 1rem;
+                        margin-bottom: 1rem;
+                        border: 0;
+                        border-top: 1px solid rgba(0, 0, 0, 0.1);
+                    }
+                </style>
+                </main>
+
+        </div>
+    </div>
+    <!-- /page content -->
+    <!-- app footer -->
+    <footer class="app-footer">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- app brand -->
+                <div class="app-brand col-3 col-lg-8">
+                    <div class="app-brand">
+                        <a class="logo-aicrowd-light" href="#">
+                            <span>AIcrowd</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- /app brand -->
+
+                <!-- legal -->
+                <div class="section-legal col-12 col-sm-4 col-md-3 col-lg-4">
+                    <p>&#169; 2022 AIcrowd. All rights reserved.</p>
+                </div>
+                <!-- /legal -->
+            </div>
+        </div>
+    </footer>
+    <!-- /app footer -->
+    <script>
+        $(document).ready(function () {
+            $("body").tooltip({
+                selector: '[data-toggle=tooltip]',
+                content: function () {
+                    return $(this).prop('title');
+                }
+            });
+        });
+    </script>
+    <style>
+        th {
+            cursor: pointer;
+        }
+
+        .table-videos td {
+            padding: 25px;
+        }
+    </style>
+</body>
+
+</html>
