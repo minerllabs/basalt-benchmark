@@ -1,5 +1,6 @@
 #!/bin/bash
-# Usage: bash download_demonstration_data.sh <basalt_data_dir> [max_data_size_in_mb]
+# Usage: bash download_demonstration_data.sh <basalt_data_dir> [max_data_size_in_mb_per_task]
+# Example: bash download_demonstration_data.sh data_directory 1000
 # This will create following folder structure:
 # <basalt_data_dir>
 #   VPT-models
@@ -17,7 +18,10 @@
 
 # Check arguments
 if [ $# -lt 1 ]; then
-    echo "Usage: bash download_demonstration_data.sh <basalt_data_dir> [max_data_size_in_mb]"
+    echo "Usage: bash download_demonstration_data.sh <basalt_data_dir> [max_data_size_in_mb_per_task]"
+    echo "       max_data_size_in_mb_per_task is optional, specifying it will limit the size of each task's data."
+    echo "       Example: bash download_demonstration_data.sh data_directory 1000"
+    echo "       This will download total of 4 x 1000 MB of data, 1000 MB per task."
     exit 1
 fi
 

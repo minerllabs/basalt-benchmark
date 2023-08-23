@@ -6,7 +6,17 @@ This code repository contains an example implementation of behavioural cloning u
 
 ## Demonstration dataset
 
-`scripts/filelists/*.txt` contains text files which list links for downloading the individual trajectories for the demonstration dataset. You can use `wget` or your favorite download tools to download the files. We have also included `scripts/download_demonstration_data.sh` to download the data using `wget`, e.g. `./scripts/download_demonstration_data.sh path_to_directory_for_data`. Note that this requires ~700GB of space on disk to download fully.
+`scripts/filelists/*.txt` contains text files which list links for downloading the individual trajectories for the demonstration dataset. You can use `wget` or your favorite download tools to download the files. We have also included `scripts/download_demonstration_data.sh` to download the data using `wget`. This command will download all ~700GB of the data:
+
+```bash
+./scripts/download_demonstration_data.sh path_to_directory_for_data
+```
+
+To download only part of the data. This command will download 1000MB per task (i.e., total of 4000MB):
+
+```bash
+./scripts/download_demonstration_data.sh path_to_directory_for_data 1000
+```
 
 ## Evaluation dataset
 
@@ -17,6 +27,9 @@ For using the dataset to do human evaluation, see `evaluation_server/README.md` 
 ## Setup the environment for training the BC model
 
 Tested system: Ubuntu with 16 CPU cores, 64GB of RAM and Nvidia Tesla T4 GPU.
+
+:warning: To install MineRL, make sure you have installed the Java requirements for it (Java JDK 8)! See [MineRL installation docs] for the exact requirements and setup.
+
 Additional requirements: `sudo apt install xvfb ffmpeg`
 
 ```bash

@@ -27,5 +27,5 @@ setup(
         "License :: OSI Approved :: MIT License",
     ],
     keywords="learning from human feedback reinforcement learning minecraft pytorch",
-    python_requires='>=3.6',
+    python_requires='>=3.8',
 )
