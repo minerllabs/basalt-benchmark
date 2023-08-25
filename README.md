@@ -6,21 +6,21 @@ This code repository contains an example implementation of behavioural cloning u
 
 ## Demonstration dataset
 
-`scripts/filelists/*.txt` contains text files which list links for downloading the individual trajectories for the demonstration dataset. You can use `wget` or your favorite download tools to download the files. We have also included `scripts/download_demonstration_data.sh` to download the data using `wget`. This command will download all ~700GB of the data:
+`scripts/filelists/*.txt` contains text files that list links for downloading the individual trajectories for the demonstration dataset. You can use `wget` or your favorite download tools to download the files. We have also included `scripts/download_demonstration_data.sh` to download the data using `wget`. This command will download all ~700GB of the data:
 
 ```bash
-./scripts/download_demonstration_data.sh path_to_directory_for_data
+bash ./scripts/download_demonstration_data.sh path_to_directory_for_data
 ```
 
-To download only part of the data. This command will download 1000MB per task (i.e., total of 4000MB):
+To download only part of the data, add the optional argument for maximum download size in MB. This command will download 1000MB per task (i.e., a total of 4000MB plus 300MB VPT model):
 
 ```bash
-./scripts/download_demonstration_data.sh path_to_directory_for_data 1000
+bash ./scripts/download_demonstration_data.sh path_to_directory_for_data 1000
 ```
 
 ## Evaluation dataset
 
-Evaluation dataset is available in at the following Zenodo record: [https://zenodo.org/record/8021960](https://zenodo.org/record/8021960).
+The evaluation dataset is available in the following Zenodo record: [https://zenodo.org/record/8021960](https://zenodo.org/record/8021960).
 
 For using the dataset to do human evaluation, see `evaluation_server/README.md` for further instructions.
 
@@ -28,9 +28,15 @@ For using the dataset to do human evaluation, see `evaluation_server/README.md` 
 
 Tested system: Ubuntu with 16 CPU cores, 64GB of RAM and Nvidia Tesla T4 GPU.
 
-:warning: To install MineRL, make sure you have installed the Java requirements for it (Java JDK 8)! See [MineRL installation docs] for the exact requirements and setup.
+:warning: To install MineRL, make sure you have installed the Java requirements for it (Java JDK 8)! See [MineRL installation docs](https://minerl.readthedocs.io/en/latest/tutorials/index.html) for the exact requirements and setup.
 
-Additional requirements: `sudo apt install xvfb ffmpeg`
+Additional requirements:
+
+```bash
+sudo apt install xvfb ffmpeg
+```
+
+Installation:
 
 ```bash
 conda env create -f environment.yml
@@ -42,17 +48,17 @@ pip install -e .
 
 ## Testing the training pipeline
 
-For small-scale test-run (5GB of data downloaded, minimal amount of training), run `./scripts/test_pipeline.sh`.
+For a small-scale test run (5GB of data downloaded, minimal amount of training), run `./scripts/test_pipeline.sh`.
 
 This will do the following:
-1) Download 5GB of data: a small subset of data for each BASALT task + smallest OpenAI VPT foundation model for playing Minecraft.
+1) Download 5GB of data: a small subset of data for each BASALT task + the smallest OpenAI VPT foundation model for playing Minecraft.
 2) Embed the dataset using the VPT model (turn video frames into smaller embeddings).
-3) Train a behavioural cloning agent on top of the embeddings using `imitation` library
+3) Train a behavioural cloning agent on top of the embeddings using the `imitation` library
 4) Roll out the trained model in Minecraft to produce the videos ready for human evaluation.
 
 This will create a new directory `pipeline_test_data`, which will contain all the downloaded data, trained models and resulting rollouts.
 
-If everything is succesful, you should have a directory `pipeline_test_data/rollouts/` directory with following structure:
+If everything is successful, you should have a directory `pipeline_test_data/rollouts/` directory with the following structure:
 
 ```
 pipeline_test_data/rollouts/
@@ -82,12 +88,12 @@ pipeline_test_data/rollouts/
     └── seed_95674.mp4
 ```
 
-These video files are now ready to be used for human evaluation. See `evaluation_server/README.md` for instructions how to setup the server and gather human rankings of this agent versus the ones shared in the Evaluation Dataset.
+These video files are now ready to be used for human evaluation. See `evaluation_server/README.md` for instructions on how to set up the server and gather human rankings of this agent versus the ones shared in the Evaluation Dataset.
 
 
 ## Running full experiment
 
-For full training, run following scripts. Make sure the experiment output directory `basalt_output_directory` has at least 1TB of free space, as this will place all downloaded and produced data there.
+For full training, run the following scripts. Make sure the experiment output directory `basalt_output_directory` has at least 1TB of free space, as this will place all downloaded and produced data there.
 
 ```bash
 basalt_output_directory="/path/to/place/for/all/the/data"
@@ -97,10 +103,10 @@ bash ./scripts/train_bc.sh $basalt_output_directory
 bash ./scripts/rollout_bc.sh $basalt_output_directory
 ```
 
-Whole process takes roughly 2-3 days on a 16-core, 64GB RAM, Nvidia Tesla T4 system.
+The whole process takes roughly 2-3 days on a 16-core, 64GB RAM, Nvidia Tesla T4 system.
 
 ## License
 
-MIT. See `LICENSE`
+MIT. See [LICENSE](LICENSE).
 
 Contents under `basalt/vpt_lib` are originally from [this repository](https://github.com/openai/Video-Pre-Training), shared under MIT license.
