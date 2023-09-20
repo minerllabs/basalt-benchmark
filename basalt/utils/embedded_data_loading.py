@@ -10,7 +10,7 @@ import os
 import glob
 
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 from imitation.data.types import Transitions
 from tqdm import tqdm
 
