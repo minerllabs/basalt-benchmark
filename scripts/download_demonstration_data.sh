@@ -46,16 +46,16 @@ wget -nc -i $FILELIST_DIR/openai-vpt-urls.txt -P $DATA_DIR/VPT-models
 
 # FindCave data
 mkdir -p $DATA_DIR/demonstrations/MineRLBasaltFindCave-v0
-wget -nc -i $FILELIST_DIR/FindCave_urls.txt -P $DATA_DIR/demonstrations/MineRLBasaltFindCave-v0 $WGET_ARGS
+wget -nc -i $FILELIST_DIR/FindCave_urls.txt -P $DATA_DIR/demonstrations/MineRLBasaltFindCave-v0 $WGET_ARGS || true
 
 # MakeWaterfall data
 mkdir -p $DATA_DIR/demonstrations/MineRLBasaltMakeWaterfall-v0
-wget -nc -i $FILELIST_DIR/MakeWaterfall_urls.txt -P $DATA_DIR/demonstrations/MineRLBasaltMakeWaterfall-v0 $WGET_ARGS
+wget -nc -i $FILELIST_DIR/MakeWaterfall_urls.txt -P $DATA_DIR/demonstrations/MineRLBasaltMakeWaterfall-v0 $WGET_ARGS || true
 
 # CreateVillageAnimalPen
 mkdir -p $DATA_DIR/demonstrations/MineRLBasaltCreateVillageAnimalPen-v0
-wget -nc -i $FILELIST_DIR/CreateVillageAnimalPen_urls.txt -P $DATA_DIR/demonstrations/MineRLBasaltCreateVillageAnimalPen-v0 $WGET_ARGS
+wget -nc -i $FILELIST_DIR/CreateVillageAnimalPen_urls.txt -P $DATA_DIR/demonstrations/MineRLBasaltCreateVillageAnimalPen-v0 $WGET_ARGS || true
 
 # BuildVillageHouse
 mkdir -p $DATA_DIR/demonstrations/MineRLBasaltBuildVillageHouse-v0
-wget -nc -i $FILELIST_DIR/BuildVillageHouse_urls.txt -P $DATA_DIR/demonstrations/MineRLBasaltBuildVillageHouse-v0 $WGET_ARGS
+wget -nc -i $FILELIST_DIR/BuildVillageHouse_urls.txt -P $DATA_DIR/demonstrations/MineRLBasaltBuildVillageHouse-v0 $WGET_ARGS || true
