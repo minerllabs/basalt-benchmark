@@ -48,7 +48,10 @@ pip install -e .
 
 ## Testing the training pipeline
 
-For a small-scale test run (5GB of data downloaded, minimal amount of training), run `./scripts/test_pipeline.sh`.
+For a small-scale test run (5GB of data downloaded, minimal amount of training), run this command:
+```bash
+bash ./scripts/test_pipeline.sh`.
+```
 
 This will do the following:
 1) Download 5GB of data: a small subset of data for each BASALT task + the smallest OpenAI VPT foundation model for playing Minecraft.
