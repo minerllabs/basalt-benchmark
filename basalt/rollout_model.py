@@ -117,8 +117,7 @@ def main(args):
         agent = bc.reconstruct_policy(args.agent_file)
 
     env = ENV_NAME_TO_SPEC[args.env]().make()
-    # Patch so that we get more statistics
-    print("[NOTE] Move symbolic info stuff to MineRL")
+    # Patch so that we get more statistics for tracking purposes
     env.create_observables = new_create_observables
 
     environment_seeds = args.environment_seeds
