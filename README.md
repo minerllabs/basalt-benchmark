@@ -50,7 +50,7 @@ pip install -e .
 
 For a small-scale test run (5GB of data downloaded, minimal amount of training), run this command:
 ```bash
-bash ./scripts/test_pipeline.sh`.
+bash ./scripts/test_pipeline.sh .
 ```
 
 This will do the following:
